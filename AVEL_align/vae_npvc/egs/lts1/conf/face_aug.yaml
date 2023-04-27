@@ -1,0 +1,6 @@
+process:
+  - type: "time_mask"
+    T: 20
+    n_mask: 2
+    inplace: true
+    replace_with_zero: true

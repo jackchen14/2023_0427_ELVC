@@ -1,0 +1,175 @@
+{
+    "train_config": {
+        "output_directory": "exp/checkpoints_mel_VQVAWGAN",
+        "trainer_type": "cdvqvawgan",
+        "max_iter": 600000,
+        "pre_iter": 100000,
+        "iter_per_G": 1,
+        "iter_per_D": 1,
+        "iters_per_checkpoint": 20000,
+        "iters_per_log": 1000,
+        "optim_type": "RAdam",
+        "generator_param":{
+            "learning_rate": 1e-4,
+            "max_grad_norm": 10,
+            "lr_scheduler":{
+                "step_size": 100000,
+                "gamma": 0.5,
+                "last_epoch": -1
+            }
+        },
+        "discriminator_param":{
+            "learning_rate": 5e-5,
+            "max_grad_norm": 1,
+            "lr_scheduler":{
+                "step_size": 100000,
+                "gamma": 0.5,
+                "last_epoch": -1
+            }  
+        },
+        "gamma": 8,
+        "gp_weight": 10,
+        "batch_size": 3,
+        "crop_length": 25600,
+        "seed": 1234,
+        "checkpoint_path": ""
+    },
+    "infer_config": {
+        "trials": "data/test/trials",
+        "model_type": "cdvqvawgan",
+        "model_path": "checkpoints_mel_VQVAWGAN/02-08_10-27_100000",
+        "output_mcc_dir": null,
+        "output_wav_dir": "exp/result_wav/p225_p227_vq_mel"
+    },
+    "data_config": {
+        "training_dir": "data/train",
+        "testing_dir": "data/test",
+        "statistic_file": "exp/statistic/train_mel_stat.pt",
+        "feature_kind":"wav-mel",
+        "sampling_rate": 24000,
+        "filter_length": 1024,
+        "hop_length": 256,
+        "win_length": 1024,
+        "n_mel_channels": 80,
+        "mel_fmin": 80.0, 
+        "mel_fmax": 7600.0
+    },
+    "model_config": {
+        "Generator": {
+            "y_dim": 64,
+            "y_num": 117,
+            "z_dim": 64,
+            "z_num": 512,
+            "embed_norm": true,
+            "beta": 0.01,
+            "sp": {
+                "encoder": {
+                    "in_channels": [ 513, 1024, 512, 128],
+                    "out_channels": [ 1024, 512, 128, 64],
+                    "kernel_size": 5,
+                    "downsample_scales": [1, 1, 1, 1],
+                    "z_channels": 64,
+                    "bias": true,
+                    "stack_kernel_size": 3,
+                    "stacks": [3, 3, 3, 3],
+                    "nonlinear_activation": "LeakyReLU",
+                    "nonlinear_activation_params": {"negative_slope": 0.2},
+                    "normalization_func": "GroupNorm",
+                    "normalization_params": { "num_groups": 1,
+                                              "eps": 1e-05, 
+                                              "affine": true},
+                    "pad":"ReflectionPad1d",
+                    "pad_params":{},
+                    "use_weight_norm": true,
+                    "use_causal_conv": false 
+                },
+                "decoder": {
+                    "in_channels": [64, 128, 256, 512],
+                    "out_channels": [128, 256, 512, 1024],
+                    "cond_channels": 64,
+                    "skip_channels": 512,
+                    "final_channels": 513,
+                    "kernel_size": 5,
+                    "upsample_scales": [1, 1, 1, 1],
+                    "bias": true,
+                    "stack_kernel_size": 3,
+                    "stacks": [3, 3, 3, 3],
+                    "nonlinear_activation": "GLU",
+                    "nonlinear_activation_params": {},
+                    "normalization_func": "GroupNorm",
+                    "normalization_params": { "num_groups": 2,
+                                              "eps": 1e-05, 
+                                              "affine": true},
+                    "pad": "ReflectionPad1d",
+                    "pad_params": {},
+                    "use_weight_norm": true,
+                    "use_causal_conv": false
+                }
+            },
+            "mcc": {
+                "encoder": {
+                    "in_channels": [ 24, 512, 256, 128],
+                    "out_channels": [ 512, 256, 128, 64],
+                    "kernel_size": 5,
+                    "downsample_scales": [ 1, 1, 1, 1],
+                    "z_channels": 64,
+                    "bias": true,
+                    "stack_kernel_size": 3,
+                    "stacks": [3, 3, 3, 3],
+                    "nonlinear_activation": "LeakyReLU",
+                    "nonlinear_activation_params": {"negative_slope": 0.2},
+                    "normalization_func": "GroupNorm",
+                    "normalization_params": { "num_groups": 1,
+                                              "eps": 1e-05, 
+                                              "affine": true},
+                    "pad":"ReflectionPad1d",
+                    "pad_params":{},
+                    "use_weight_norm": true,
+                    "use_causal_conv": false 
+                },
+                "decoder": {
+                    "in_channels": [ 64, 128, 256, 512],
+                    "out_channels": [ 128, 256, 512, 512],
+                    "cond_channels": 64,
+                    "skip_channels": 32,
+                    "final_channels": 24,                    
+                    "kernel_size": 5,
+                    "upsample_scales": [256],
+                    "bias": true,
+                    "stack_kernel_size": 3,
+                    "stacks": [10],
+                    "nonlinear_activation": "GLU",
+                    "nonlinear_activation_params": {},
+                    "normalization_func": "GroupNorm",
+                    "normalization_params": { "num_groups": 2,
+                                              "eps": 1e-05, 
+                                              "affine": true},
+                    "pad": "ReflectionPad1d",
+                    "pad_params": {},
+                    "use_weight_norm": true,
+                    "use_causal_conv": false
+                }     
+            }       
+        },
+        "Discriminator": {
+            "in_channels": [ 24, 256, 128, 64],
+            "out_channels": [ 256, 128, 64, 32],
+            "kernel_size": 5,
+            "downsample_scales": [1, 1, 1, 1],
+            "z_channels": 1,
+            "bias": true,
+            "stack_kernel_size": 3,
+            "stacks": [3, 3, 3, 3],
+            "nonlinear_activation": "LeakyReLU",
+            "nonlinear_activation_params": {"negative_slope": 0.2},
+            "normalization_func": "GroupNorm",
+            "normalization_params": { "num_groups": 1,
+                                      "eps": 1e-05, 
+                                      "affine": true},
+            "pad":"ReflectionPad1d",
+            "pad_params":{},
+            "use_weight_norm": true,
+            "use_causal_conv": false 
+        }
+    }
+}

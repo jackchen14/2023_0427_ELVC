@@ -1,0 +1,12 @@
+{
+    "data_config": {
+        "feature_kind":"mel",
+        "sampling_rate": 24000,
+        "fft_size": 1024,
+        "hop_length": 256,
+        "win_length": 1024,
+        "n_mel_channels": 80,
+        "mel_fmin": 80.0, 
+        "mel_fmax": 7600.0
+    }
+}

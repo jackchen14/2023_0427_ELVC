@@ -1,0 +1,115 @@
+{
+    "train_config": {
+        "output_directory": "exp/checkpoints_CDP_MELTFM",
+        "trainer_type": "cdp_meltransformer",
+        "model_type": "cdp_meltransformer",
+        "max_iter": 1000000,
+        "iters_per_checkpoint": 20000,
+        "iters_per_log": 1000,
+        "optimize_param":{
+            "optim_type": "RAdam",
+            "learning_rate": 1e-3,
+            "max_grad_norm": 1,
+            "lr_scheduler":{
+                "step_size": 100000,
+                "gamma": 0.5,
+                "last_epoch": -1
+            }
+        },
+        "batch_size": 16,
+        "crop_length": 276,
+        "seed": 1234,
+        "checkpoint_path": ""
+    },
+    "infer_config": {
+        "trials": "data/test/trials",
+        "model_type": "cdp_meltransformer",
+        "model_path": "exp/checkpoints_CDPVQVAE/02-08_10-27_100000",
+        "output_mcc_dir": null,
+        "output_wav_dir": "exp/result_wav/p225_p227_vq_mel"
+    },
+    "data_config": {
+        "training_dir": "data/train_nl_cmvn",
+        "testing_dir": "data/test",
+        "statistic_file": "data/train_nl_cmvn/stats.pt",
+        "feature_kind":"mcc-pos-mel",
+        "sampling_rate": 16000,
+        "fft_size": 1024,
+        "hop_length": 256,
+        "shiftms": 16,
+        "win_length": 1024,
+        "n_mel_channels": 80,
+        "mel_fmin": 80.0, 
+        "mel_fmax": 7600.0,
+        "minf0": 40.0, 
+        "maxf0": 700.0,
+        "cutoff_freq": 70
+    },
+    "model_config": {
+        "y_dim": 128,
+        "y_num": 19,
+        "z_dim": 128,
+        "z_num": 128,
+        "f_max": 700.0,
+        "f_min": 20.0,
+        "f_dim": 32,
+        "embed_norm": true,
+        "beta": 0.001,
+        "encoder": {
+            "sp":{
+                "input":  [  513, 1024, 512, 256, 128],
+                "output": [ 1024,  512, 256, 128, 128],
+                "kernel": [ 5, 5, 5, 5, 5],
+                "stride": [ 1, 1, 1, 1, 1] 
+            },
+            "mcc":{
+                "input":  [  24, 512, 256, 128, 128],
+                "output": [ 512, 256, 128, 128, 128],
+                "kernel": [ 5, 5, 5, 5, 5],
+                "stride": [ 1, 1, 1, 1, 1]
+            },
+            "mel":{
+                "input":  [  80, 512, 256, 128, 128],
+                "output": [ 512, 256, 128, 128, 128],
+                "kernel": [ 5, 5, 5, 5, 5],
+                "stride": [ 1, 1, 1, 1, 1]
+            }
+        },
+        "decoder": {
+            "sp":{
+                "input":  [ 128, 128, 256, 512, 1024],
+                "output": [ 128, 256, 512, 1024, 513],
+                "kernel": [ 5, 5, 5, 5, 5],
+                "stride": [ 1, 1, 1, 1, 1]
+            },
+            "mcc":{
+                "input":  [ 128, 128, 128, 256, 512],
+                "output": [ 128, 128, 256, 512,  24],
+                "kernel": [ 5, 5, 5, 5, 5],
+                "stride": [ 1, 1, 1, 1, 1]
+            },
+            "mel":{
+                "input":  [ 128, 128, 128, 256, 512],
+                "output": [ 128, 128, 256, 512,  80],
+                "kernel": [ 5, 5, 5, 5, 5],
+                "stride": [ 1, 1, 1, 1, 1]
+            },
+            "transformer": {
+                "encoder": {
+                    "num_hidden": 128,
+                    "num_layers": 3,
+                    "pre_layers": false,
+                    "pre_norm": "batch_norm"
+                },
+                "decoder": {
+                    "num_mels": 80,
+                    "num_hidden": 128,
+                    "num_condition": 128,
+                    "num_layers": 3,
+                    "pre_layer": true,
+                    "post_norm": "batch_norm"
+                }
+            }
+        }
+    }
+}

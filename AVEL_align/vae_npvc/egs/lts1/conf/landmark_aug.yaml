@@ -1,0 +1,18 @@
+process:
+  - type: "flipping"
+    feat_type: "landmark"
+    horizontal: true
+    rate: 0.1 
+  - type: "volume_perturbation"
+    lower: -1.05
+    upper: 1.05
+    dbunit: false
+  - type: "time_warp"
+    max_time_warp: 3
+    inplace: true
+    mode: "PIL"
+  - type: "time_mask"
+    T: 40
+    n_mask: 2
+    inplace: true
+    replace_with_zero: true

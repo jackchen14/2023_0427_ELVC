@@ -1,0 +1,10 @@
+dtw
+fastdtw
+h5py
+ipdb
+librosa
+pysptk
+pysptk
+pyworld
+pyyaml
+scipy

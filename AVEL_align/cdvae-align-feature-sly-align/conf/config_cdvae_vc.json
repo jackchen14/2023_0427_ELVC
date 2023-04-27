@@ -1,0 +1,65 @@
+{
+    "train_config": {
+        "output_directory": "checkpoints_CDVAE",
+        "model_type": "cdvae",
+        "max_iter": 100000,
+        "learning_rate": 1e-4,
+        "batch_size": 16,
+        "crop_length": 128,
+        "iters_per_checkpoint": 10000,
+        "iters_per_log": 1000,
+        "seed": 1234,
+        "checkpoint_path": ""
+    },
+    "infer_config": {
+        "source_conf": "conf/SM1_conf.yml",
+        "target_conf": "conf/TF1_conf.yml",
+        "model_type": "cdvae",
+        "model_path": "checkpoints_CDVAE/11-28_16-47_10000",
+        "output_mcc_dir": null,
+        "output_wav_dir": "result_wav/SM1_TF1_cd"
+    },
+    "data_config": {
+        "training_dict": "dictionary/All_spmcc_train_dict.npz",
+        "statistic_dir": "statistic",
+        "feature_dir": "../vcc2018/wld_feature_34dim",
+        "feature_kind":"mcc",
+        "sampling_rate": 22050,
+        "shiftms": 4.988662131519274,
+        "alpha": 0.455,
+        "data_dim": 34
+    },
+    "model_config": {
+        "y_dim": 16,
+        "y_num": 12,
+        "z_dim": 16,
+        "encoder": {
+            "sp":{
+                "input":  [ 513, 1024, 512, 256, 64],
+                "output": [ 1024, 512, 256, 64, 32],
+                "kernel": [ 3, 3, 3, 3, 3],
+                "stride": [ 1, 1, 1, 1, 1] 
+            },
+            "mcc":{
+                "input":  [ 34, 512, 256, 128, 64],
+                "output": [ 512, 256, 128, 64, 32],
+                "kernel": [ 3, 3, 3, 3, 3],
+                "stride": [ 1, 1, 1, 1, 1]
+            }
+        },
+        "decoder": {
+            "sp":{
+                "input":  [ 16, 128, 256, 512, 1024],
+                "output": [ 128, 256, 512, 1024, 513],
+                "kernel": [ 3, 3, 3, 3, 3],
+                "stride": [ 1, 1, 1, 1, 1]
+            },
+            "mcc":{
+                "input":  [ 16, 64, 128, 256, 512],
+                "output": [ 64, 128, 256, 512, 34],
+                "kernel": [ 3, 3, 3, 3, 3],
+                "stride": [ 1, 1, 1, 1, 1]
+            }
+        }
+    }
+}

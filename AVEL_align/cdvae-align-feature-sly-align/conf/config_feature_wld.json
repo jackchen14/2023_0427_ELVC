@@ -1,0 +1,16 @@
+{
+    "data_config": {
+        "feature_kind":"sp-ap-f0-mcc-wld",
+        "sampling_rate": 16000,
+        "fft_size": 1024,
+        "hop_length": 80,
+        "shiftms": 5,
+        "mcc_dim": 24,
+        "mcc_alpha": 0.455,
+        "f0_fmin": 40,
+        "f0_fmax": 700,
+        "minf0": 40.0, 
+        "maxf0": 700.0,
+        "cutoff_freq": 70
+    }
+}

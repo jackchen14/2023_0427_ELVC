@@ -1,0 +1,18 @@
+{
+    "data_config": {
+        "feature_kind":"mel-sp-f0",
+        "sampling_rate": 16000,
+        "fft_size": 1024,
+        "hop_length": 256,
+        "shiftms": 16,
+        "win_length": 1024,
+        "n_mel_channels": 80,
+        "mel_fmin": 80.0, 
+        "mel_fmax": 7600.0,
+        "cutoff_freq": 70,
+        "f0_fmin": 40,
+        "f0_fmax": 700,
+        "mcc_dim": 24,
+        "mcc_alpha": 0.455
+    }
+}
